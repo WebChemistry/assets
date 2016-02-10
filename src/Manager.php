@@ -43,17 +43,15 @@ class Manager {
 
 	/**
 	 * @param string $minified
-	 * @param string $module
 	 * @return Html|null
 	 */
-	public function getJs($minified, $module = NULL) {
-		$module = $module === NULL ? $this->module : $module;
-		if (!isset($this->assets[$module]['js'][$minified])) {
+	public function getJs($minified) {
+		if (!isset($this->assets['js'][$minified])) {
 			return NULL;
 		}
 
 		$container = Html::el();
-		foreach ($this->assets[$module]['js'][$minified] as $file) {
+		foreach ($this->assets['js'][$minified] as $file) {
 			$container->add(
 				Html::el('script')->src($this->basePath . $file)
 			);
