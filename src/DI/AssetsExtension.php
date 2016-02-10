@@ -57,7 +57,7 @@ class AssetsExtension extends CompilerExtension {
 								$return[$type][$minified][] = dirname($row) . '/' . $file->getBaseName();
 							}
 						} else {
-							$return[$type]['files'][] = $row;
+							$return[$type][$minified][] = $row;
 						}
 					}
 				}
