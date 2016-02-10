@@ -1,0 +1,7 @@
+{
+  "name": "webchemistry/assets",
+  "tags": ["assets", "grunt", "nette"],
+  "autoload": {
+    "classmap": ["src/"]
+  }
+}
