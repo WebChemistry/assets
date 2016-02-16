@@ -23,41 +23,39 @@ class Manager {
 	}
 
 	/**
-	 * @param string $minified
-	 * @return Html|null
+	 * @param $minified
+	 * @return Html
+	 * @throws \Exception
 	 */
 	public function getCss($minified) {
 		if (!isset($this->assets['css'][$minified])) {
-			return NULL;
+			throw new \Exception("Index '$minified' not exists.");
 		}
 
-		$container = Html::el();
+		$container = "<!-- Minified: " . ($this->basePath . $minified) ." -->\n";
 		foreach ($this->assets['css'][$minified] as $file) {
-			$container->add(
-				Html::el('link')->rel('stylesheet')->href($this->basePath . $file)
-			);
+			$container .= "<link rel=\"stylesheet\" href=\"" . ($this->basePath . $file) . "\">\n";
 		}
 
-		return $container;
+		return Html::el()->setHtml($container);
 	}
 
 	/**
-	 * @param string $minified
-	 * @return Html|null
+	 * @param $minified
+	 * @return Html
+	 * @throws \Exception
 	 */
 	public function getJs($minified) {
 		if (!isset($this->assets['js'][$minified])) {
-			return NULL;
+			throw new \Exception("Index '$minified' not exists.");
 		}
 
-		$container = Html::el();
+		$container = "<!-- Minified: " . ($this->basePath . $minified) ." -->\n";
 		foreach ($this->assets['js'][$minified] as $file) {
-			$container->add(
-				Html::el('script')->src($this->basePath . $file)
-			);
+			$container .= "<script src=\"" . ($this->basePath . $file) ."\"></script>\n";
 		}
 
-		return $container;
+		return Html::el()->setHtml($container);
 	}
 
 }
