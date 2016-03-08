@@ -22,6 +22,8 @@ class AssetsExtension extends CompilerExtension {
 		$config = Helpers::expand($this->validateConfig($this->defaults, $this->getConfig()), $builder->parameters);
 		$assets = $this->getAssets($config['resources'], $config['debugMode'], $config['baseDir']);
 
+		$this->compiler->addDependencies($config['resources']);
+
 		$builder->addDefinition($this->prefix('manager'))
 			->setClass('WebChemistry\Assets\Manager', [$assets]);
 	}
