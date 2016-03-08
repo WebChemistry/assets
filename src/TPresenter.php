@@ -9,6 +9,9 @@ trait TPresenter {
 	/** @var Manager */
 	private $assetsManager;
 
+	/**
+	 * @param Manager $assetsManger
+	 */
 	public function injectAssetsManager(Manager $assetsManger) {
 		$this->assetsManager = $assetsManger;
 	}

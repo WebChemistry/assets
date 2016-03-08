@@ -11,7 +11,7 @@ use Nette\Utils\Strings;
 class AssetsExtension extends CompilerExtension {
 
 	/** @var array */
-	private $defaults = [
+	public $defaults = [
 		'resources' => [],
 		'debugMode' => '%debugMode%',
 		'baseDir' => '%wwwDir%/'
@@ -19,7 +19,7 @@ class AssetsExtension extends CompilerExtension {
 
 	public function loadConfiguration() {
 		$builder = $this->getContainerBuilder();
-		$config = Helpers::expand($this->validateConfig($this->defaults, $this->getConfig()), $builder->parameters);
+		$config = Helpers::expand($this->validateConfig($this->defaults), $builder->parameters);
 		$assets = $this->getAssets($config['resources'], $config['debugMode'], $config['baseDir']);
 
 		$this->compiler->addDependencies($config['resources']);
@@ -55,6 +55,7 @@ class AssetsExtension extends CompilerExtension {
 					}
 					foreach ((array) $assets as $row) {
 						if (strpos($row, '*') !== FALSE) {
+							/** @var \SplFileInfo $file */
 							foreach (Finder::findFiles(basename($row))->in($baseDir . dirname($row)) as $file) {
 								$return[$type][$minified][] = dirname($row) . '/' . $file->getBaseName();
 							}
