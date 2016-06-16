@@ -28,6 +28,13 @@ class AssetsExtension extends CompilerExtension {
 			->setClass('WebChemistry\Assets\Manager', [$assets]);
 	}
 
+	public function beforeCompile() {
+		$builder = $this->getContainerBuilder();
+
+		$builder->getDefinition('latte.latteFactory')
+			->addSetup('WebChemistry\Assets\AssetsMacro::install(?->getCompiler());');
+	}
+
 	/**
 	 * @param array $resources
 	 * @param bool $debugMode
