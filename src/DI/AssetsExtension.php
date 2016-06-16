@@ -32,7 +32,7 @@ class AssetsExtension extends CompilerExtension {
 		$builder = $this->getContainerBuilder();
 
 		$builder->getDefinition('latte.latteFactory')
-			->addSetup('WebChemistry\Assets\AssetsMacro::install(?->getCompiler());');
+			->addSetup('WebChemistry\Assets\AssetsMacro::install(?->getCompiler());', ['@self']);
 	}
 
 	/**
