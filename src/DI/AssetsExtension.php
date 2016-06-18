@@ -13,7 +13,7 @@ class AssetsExtension extends CompilerExtension {
 	/** @var array */
 	public $defaults = [
 		'resources' => [],
-		'minify' => '%debugMode%',
+		'minify' => '!%debugMode%',
 		'baseDir' => '%wwwDir%/'
 	];
 
