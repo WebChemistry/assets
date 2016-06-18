@@ -13,7 +13,7 @@ class AssetsExtension extends CompilerExtension {
 	/** @var array */
 	public $defaults = [
 		'resources' => [],
-		'debugMode' => '%debugMode%',
+		'minify' => '%debugMode%',
 		'baseDir' => '%wwwDir%/'
 	];
 
@@ -31,8 +31,10 @@ class AssetsExtension extends CompilerExtension {
 	public function beforeCompile() {
 		$builder = $this->getContainerBuilder();
 
-		$builder->getDefinition('latte.latteFactory')
-			->addSetup('WebChemistry\Assets\AssetsMacro::install(?->getCompiler());', ['@self']);
+		if ($builder->hasDefinition('latte.latteFactory')) {
+			$builder->getDefinition('latte.latteFactory')
+				->addSetup('WebChemistry\Assets\AssetsMacro::install(?->getCompiler());', ['@self']);
+		}
 	}
 
 	/**
@@ -64,7 +66,7 @@ class AssetsExtension extends CompilerExtension {
 						if (strpos($row, '*') !== FALSE) {
 							/** @var \SplFileInfo $file */
 							foreach (Finder::findFiles(basename($row))->in($baseDir . dirname($row)) as $file) {
-								$return[$type][$minified][] = dirname($row) . '/' . $file->getBaseName();
+								$return[$type][$minified][] = dirname($row) . '/' . $file->getBasename();
 							}
 						} else {
 							$return[$type][$minified][] = $row;
