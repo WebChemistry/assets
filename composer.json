@@ -1,7 +1,17 @@
 {
-  "name": "webchemistry/assets",
-  "tags": ["assets", "grunt", "nette"],
-  "autoload": {
-    "classmap": ["src/"]
-  }
+	"name": "webchemistry/assets",
+	"tags": [
+		"assets",
+		"grunt",
+		"nette"
+	],
+	"require": {
+		"nette/di": "^2.3",
+		"nette/finder": "^2.3"
+	},
+	"autoload": {
+		"classmap": [
+			"src/"
+		]
+	}
 }
