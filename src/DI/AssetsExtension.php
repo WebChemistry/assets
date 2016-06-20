@@ -13,14 +13,14 @@ class AssetsExtension extends CompilerExtension {
 	/** @var array */
 	public $defaults = [
 		'resources' => [],
-		'minify' => '!%debugMode%',
+		'minify' => '%debugMode%',
 		'baseDir' => '%wwwDir%/'
 	];
 
 	public function loadConfiguration() {
 		$builder = $this->getContainerBuilder();
 		$config = Helpers::expand($this->validateConfig($this->defaults), $builder->parameters);
-		$assets = $this->getAssets($config['resources'], $config['debugMode'], $config['baseDir']);
+		$assets = $this->getAssets($config['resources'], !$config['minify'], $config['baseDir']);
 
 		$this->compiler->addDependencies($config['resources']);
 
@@ -39,10 +39,10 @@ class AssetsExtension extends CompilerExtension {
 
 	/**
 	 * @param array $resources
-	 * @param bool $debugMode
+	 * @param bool $minify
 	 * @return array
 	 */
-	public function getAssets(array $resources, $debugMode, $baseDir) {
+	public function getAssets(array $resources, $minify, $baseDir) {
 		$config = [];
 		$return = [];
 
@@ -58,7 +58,7 @@ class AssetsExtension extends CompilerExtension {
 					continue;
 				}
 				foreach ($typeArray as $minified => $assets) {
-					if (!$debugMode) {
+					if ($minify) {
 						$return[$type][$minified][] = $minified;
 						continue;
 					}
