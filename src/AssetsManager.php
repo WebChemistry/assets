@@ -13,23 +13,28 @@ class AssetsManager {
 	/** @var string */
 	private $basePath;
 
+	/** @var bool */
+	private $minify;
+
 	/**
 	 * @param array $assets
+	 * @param bool $minify
 	 * @param Request $request
 	 */
-	public function __construct(array $assets, Request $request) {
+	public function __construct(array $assets, $minify, Request $request) {
 		$this->assets = $assets;
 		$this->basePath = $request->getUrl()->getBasePath();
+		$this->minify = $minify;
 	}
 
 	/**
-	 * @param $minified
+	 * @param string $minified
+	 * @throws AssetsException
 	 * @return Html
-	 * @throws \Exception
 	 */
 	public function getCss($minified) {
 		if (!isset($this->assets['css'][$minified])) {
-			throw new \Exception("Index '$minified' not exists.");
+			throw new AssetsException("Index '$minified' not exists.");
 		}
 
 		$container = "<!-- Minified: " . ($this->basePath . $minified) ." -->\n";
@@ -41,18 +46,20 @@ class AssetsManager {
 	}
 
 	/**
-	 * @param $minified
+	 * @param string $minified
+	 * @param array $options
+	 * @throws AssetsException
 	 * @return Html
-	 * @throws \Exception
 	 */
-	public function getJs($minified) {
+	public function getJs($minified, array $options = []) {
 		if (!isset($this->assets['js'][$minified])) {
-			throw new \Exception("Index '$minified' not exists.");
+			throw new AssetsException("Index '$minified' not exists.");
 		}
 
+		$options = $this->minify ? ' ' . implode(' ', $options) : '';
 		$container = "<!-- Minified: " . ($this->basePath . $minified) ." -->\n";
 		foreach ($this->assets['js'][$minified] as $file) {
-			$container .= "<script src=\"" . ($this->basePath . $file) ."\"></script>\n";
+			$container .= "<script src=\"" . ($this->basePath . $file) ."\"$options></script>\n";
 		}
 
 		return Html::el()->setHtml($container);

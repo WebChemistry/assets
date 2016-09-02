@@ -18,11 +18,13 @@ class AssetsMacro extends MacroSet {
 	}
 
 	public function assetsMacro(MacroNode $node, PhpWriter $writer) {
-		if (Strings::endsWith($node->args, '.js')) {
-			return $writer->write('echo $assets->getJs(%word);', $node->args);
+		$args = explode(' ', trim($node->args));
+		$name = array_shift($args);
+		if (Strings::endsWith($name, '.js')) {
+			return $writer->write('echo $assets->getJs(%word, %var);', $name, $args);
 		}
-		if (Strings::endsWith($node->args, '.css')) {
-			return $writer->write('echo $assets->getCss(%word);', $node->args);
+		if (Strings::endsWith($name, '.css')) {
+			return $writer->write('echo $assets->getCss(%word, %var);', $name, $args);
 		}
 
 		throw new \Exception("Assets must ends with .js or .css, '{$node->args}' given.");
