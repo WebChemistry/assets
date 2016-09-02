@@ -7,6 +7,8 @@ use Nette\DI\Helpers;
 use Nette\Neon\Neon;
 use Nette\Utils\Finder;
 use Nette\Utils\Strings;
+use WebChemistry\Assets\AssetsMacro;
+use WebChemistry\Assets\AssetsManager;
 
 class AssetsExtension extends CompilerExtension {
 
@@ -14,7 +16,7 @@ class AssetsExtension extends CompilerExtension {
 	public $defaults = [
 		'resources' => [],
 		'minify' => '%debugMode%',
-		'baseDir' => '%wwwDir%/'
+		'baseDir' => '%wwwDir%/',
 	];
 
 	public function loadConfiguration() {
@@ -25,7 +27,7 @@ class AssetsExtension extends CompilerExtension {
 		$this->compiler->addDependencies($config['resources']);
 
 		$builder->addDefinition($this->prefix('manager'))
-			->setClass('WebChemistry\Assets\AssetsManager', [$assets]);
+			->setClass(AssetsManager::class, [$assets]);
 	}
 
 	public function beforeCompile() {
@@ -33,7 +35,7 @@ class AssetsExtension extends CompilerExtension {
 
 		if ($builder->hasDefinition('latte.latteFactory')) {
 			$builder->getDefinition('latte.latteFactory')
-				->addSetup('WebChemistry\Assets\AssetsMacro::install(?->getCompiler());', ['@self']);
+				->addSetup(AssetsMacro::class . '::install(?->getCompiler());', ['@self']);
 		}
 	}
 
