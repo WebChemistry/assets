@@ -5,7 +5,7 @@ namespace WebChemistry\Assets;
 use Nette\Http\Request;
 use Nette\Utils\Html;
 
-class Manager {
+class AssetsManager {
 
 	/** @var array */
 	private $assets;

@@ -25,7 +25,7 @@ class AssetsExtension extends CompilerExtension {
 		$this->compiler->addDependencies($config['resources']);
 
 		$builder->addDefinition($this->prefix('manager'))
-			->setClass('WebChemistry\Assets\Manager', [$assets]);
+			->setClass('WebChemistry\Assets\AssetsManager', [$assets]);
 	}
 
 	public function beforeCompile() {

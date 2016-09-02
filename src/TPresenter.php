@@ -6,13 +6,13 @@ use Nette\Application\UI\ITemplate;
 
 trait TPresenter {
 
-	/** @var Manager */
+	/** @var AssetsManager */
 	private $assetsManager;
 
 	/**
-	 * @param Manager $assetsManger
+	 * @param AssetsManager $assetsManger
 	 */
-	public function injectAssetsManager(Manager $assetsManger) {
+	public function injectAssetsManager(AssetsManager $assetsManger) {
 		$this->assetsManager = $assetsManger;
 	}
 
