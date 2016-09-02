@@ -56,7 +56,7 @@ class AssetsManager {
 			throw new AssetsException("Index '$minified' not exists.");
 		}
 
-		$options = $this->minify ? ' ' . implode(' ', $options) : '';
+		$options = !$this->minify ? ' ' . implode(' ', $options) : '';
 		$container = "<!-- Minified: " . ($this->basePath . $minified) ." -->\n";
 		foreach ($this->assets['js'][$minified] as $file) {
 			$container .= "<script src=\"" . ($this->basePath . $file) ."\"$options></script>\n";
