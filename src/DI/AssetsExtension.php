@@ -26,7 +26,7 @@ class AssetsExtension extends CompilerExtension {
 	public function loadConfiguration() {
 		$builder = $this->getContainerBuilder();
 		$config = $this->getParsedConfig();
-		$assets = $this->getAssets($config['resources'], !$config['minify'], $config['baseDir']);
+		$assets = $this->getAssets($config['resources'], $config['minify'], $config['baseDir']);
 
 		$this->compiler->addDependencies($config['resources']);
 
