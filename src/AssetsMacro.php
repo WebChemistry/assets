@@ -27,7 +27,7 @@ class AssetsMacro extends MacroSet {
 			return $writer->write('echo $assets->getCss(%word);', $name);
 		}
 
-		throw new \Exception("Assets must ends with .js or .css, '{$node->args}' given.");
+		throw new AssetsException("Assets must ends with .js or .css, '{$node->args}' given.");
 	}
 
 }
