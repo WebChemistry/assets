@@ -31,7 +31,9 @@ class AssetsExtension extends CompilerExtension {
 		$this->compiler->addDependencies($config['resources']);
 
 		$builder->addDefinition($this->prefix('manager'))
-			->setClass(AssetsManager::class, [$assets, $config['minify']]);
+			->setClass(AssetsManager::class, [
+				$assets, $config['minify'], time()
+			]);
 	}
 
 	public function beforeCompile() {

@@ -16,15 +16,20 @@ class AssetsManager {
 	/** @var bool */
 	private $minify;
 
+	/** @var int */
+	private $timestamp;
+
 	/**
 	 * @param array $assets
 	 * @param bool $minify
+	 * @param int $timestamp
 	 * @param Request $request
 	 */
-	public function __construct(array $assets, $minify, Request $request) {
+	public function __construct(array $assets, $minify, $timestamp, Request $request) {
 		$this->assets = $assets;
 		$this->basePath = $request->getUrl()->getBasePath();
 		$this->minify = $minify;
+		$this->timestamp = '?t=' . $timestamp;
 	}
 
 	/**
@@ -37,9 +42,14 @@ class AssetsManager {
 			throw new AssetsException("Index '$minified' not exists.");
 		}
 
-		$container = "<!-- Minified: " . ($this->basePath . $minified) ." -->\n";
-		foreach ($this->assets['css'][$minified] as $file) {
-			$container .= "<link rel=\"stylesheet\" href=\"" . ($this->basePath . $file) . "\">\n";
+		if ($this->minify) {
+			$file = current($this->assets['css'][$minified]);
+			$container = "<link rel=\"stylesheet\" href=\"" . ($this->basePath . $file) . $this->timestamp . "\">\n";
+		} else {
+			$container = "<!-- Minified: " . ($this->basePath . $minified) . " -->\n";
+			foreach ($this->assets['css'][$minified] as $file) {
+				$container .= "<link rel=\"stylesheet\" href=\"" . ($this->basePath . $file) . "\">\n";
+			}
 		}
 
 		return Html::el()->setHtml($container);
@@ -56,10 +66,15 @@ class AssetsManager {
 			throw new AssetsException("Index '$minified' not exists.");
 		}
 
-		$options = !$this->minify ? ' ' . implode(' ', $options) : '';
-		$container = "<!-- Minified: " . ($this->basePath . $minified) ." -->\n";
-		foreach ($this->assets['js'][$minified] as $file) {
-			$container .= "<script src=\"" . ($this->basePath . $file) ."\"$options></script>\n";
+		if ($this->minify) {
+			$options = ' ' . implode(' ', $options);
+			$file = current($this->assets['js'][$minified]);
+			$container = "<script src=\"" . ($this->basePath . $file) . $this->timestamp ."\"$options></script>\n";
+		} else {
+			$container = "<!-- Minified: " . ($this->basePath . $minified) ." -->\n";
+			foreach ($this->assets['js'][$minified] as $file) {
+				$container .= "<script src=\"" . ($this->basePath . $file) ."\"$options></script>\n";
+			}
 		}
 
 		return Html::el()->setHtml($container);
