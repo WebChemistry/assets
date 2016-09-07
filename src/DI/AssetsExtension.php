@@ -31,9 +31,7 @@ class AssetsExtension extends CompilerExtension {
 		$this->compiler->addDependencies($config['resources']);
 
 		$builder->addDefinition($this->prefix('manager'))
-			->setClass(AssetsManager::class, [
-				$assets, $config['minify'], time()
-			]);
+			->setClass(AssetsManager::class, [$assets, $config['minify']]);
 	}
 
 	public function beforeCompile() {
@@ -66,11 +64,11 @@ class AssetsExtension extends CompilerExtension {
 			foreach ($moduleArray as $type => $typeArray) {
 				if (!isset(self::$supportTypes[$type])) {
 					throw new AssetsException("Found section '$type', but expected one of " .
-											  implode(', ', array_keys(self::$supportTypes)));
+						implode(', ', array_keys(self::$supportTypes)));
 				}
 				foreach ($typeArray as $minified => $assets) {
 					if ($minify) {
-						$return[$type][$minified][] = $minified;
+						$return[$type][$minified] = TRUE;
 						continue;
 					}
 					foreach ((array) $assets as $row) {
