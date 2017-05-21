@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WebChemistry\Assets\DI;
 
 use Nette\DI\CompilerExtension;
-use Nette\DI\Helpers;
 use Nette\Neon\Neon;
 use Nette\Utils\Finder;
 use Nette\Utils\Strings;
@@ -23,7 +24,7 @@ class AssetsExtension extends CompilerExtension {
 	/** @var array */
 	private static $supportTypes = ['css' => TRUE, 'js' => TRUE];
 
-	public function loadConfiguration() {
+	public function loadConfiguration(): void {
 		$builder = $this->getContainerBuilder();
 		$config = $this->getParsedConfig();
 		$assets = $this->getAssets($config['resources'], $config['minify'], $config['baseDir']);
@@ -34,7 +35,7 @@ class AssetsExtension extends CompilerExtension {
 			->setClass(AssetsManager::class, [$assets, $config['minify']]);
 	}
 
-	public function beforeCompile() {
+	public function beforeCompile(): void {
 		$builder = $this->getContainerBuilder();
 
 		if ($builder->hasDefinition('latte.latteFactory')) {
@@ -50,7 +51,7 @@ class AssetsExtension extends CompilerExtension {
 	 * @throws AssetsException
 	 * @return array
 	 */
-	public function getAssets(array $resources, $minify, $baseDir) {
+	public function getAssets(array $resources, bool $minify, string $baseDir): array {
 		$config = [];
 		$return = [];
 
@@ -91,7 +92,7 @@ class AssetsExtension extends CompilerExtension {
 	/**
 	 * @return array
 	 */
-	private function getParsedConfig() {
+	private function getParsedConfig(): array {
 		$builder = $this->getContainerBuilder();
 		$config = $this->validateConfig($this->defaults);
 		if ($config['minify'] === NULL) {

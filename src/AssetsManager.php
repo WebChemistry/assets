@@ -20,18 +20,13 @@ class AssetsManager {
 	/** @var bool */
 	private $minify;
 
-	/**
-	 * @param array $assets
-	 * @param bool $minify
-	 * @param Request $request
-	 */
-	public function __construct(array $assets, $minify, Request $request) {
+	public function __construct(array $assets, bool $minify, Request $request) {
 		$this->assets = $assets;
 		$this->basePath = $request->getUrl()->getBasePath();
 		$this->minify = $minify;
 	}
 
-	public function parse($name) {
+	public function parse(string $name): string {
 		$args = array_slice(func_get_args(), 1);
 		if (Strings::endsWith($name, '.css')) {
 			return $this->getCss($name);
@@ -63,7 +58,7 @@ class AssetsManager {
 	 * @throws AssetsException
 	 * @return Html
 	 */
-	public function getCss($minified) {
+	public function getCss(string $minified): Html {
 		if (!isset($this->assets['css'][$minified])) {
 			throw new AssetsException("Minified assets '$minified' not exists.");
 		}
@@ -84,9 +79,9 @@ class AssetsManager {
 	 * @param string $minified
 	 * @param array $options
 	 * @throws AssetsException
-	 * @return Html|void
+	 * @return Html
 	 */
-	public function getJs($minified, array $options = []) {
+	public function getJs(string $minified, array $options = []): Html {
 		if (!isset($this->assets['js'][$minified])) {
 			throw new AssetsException("Minified assets '$minified' not exists.");
 		}

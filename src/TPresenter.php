@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WebChemistry\Assets;
 
 use Nette\Application\UI\ITemplate;
@@ -20,7 +22,7 @@ trait TPresenter {
 	 * @param ITemplate $template
 	 * @return ITemplate
 	 */
-	public function createTemplate($template = NULL) {
+	public function createTemplate(?ITemplate $template = NULL): ITemplate {
 		$template = $template ? : parent::createTemplate();
 		$template->assets = $this->assetsManager;
 
