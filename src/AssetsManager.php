@@ -2,7 +2,7 @@
 
 namespace WebChemistry\Assets;
 
-use Nette\Http\Request;
+use Nette\Http\IRequest;
 use Nette\Utils\Html;
 use Nette\Utils\Strings;
 
@@ -20,7 +20,7 @@ class AssetsManager {
 	/** @var bool */
 	private $minify;
 
-	public function __construct(array $assets, bool $minify, Request $request) {
+	public function __construct(array $assets, bool $minify, IRequest $request) {
 		$this->assets = $assets;
 		$this->basePath = $request->getUrl()->getBasePath();
 		$this->minify = $minify;
@@ -37,12 +37,12 @@ class AssetsManager {
 				}
 				if ($option === 'ifMinified') {
 					if (!$this->minify) {
-						return;
+						return '';
 					}
 					unset($args[$i]);
 				} else if ($option === 'ifNotMinified') {
 					if ($this->minify) {
-						return;
+						return '';
 					}
 					unset($args[$i]);
 				}
