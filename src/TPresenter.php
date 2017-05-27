@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WebChemistry\Assets;
 
+use Latte\Engine;
 use Nette\Application\UI\ITemplate;
 
 trait TPresenter {
@@ -24,7 +25,10 @@ trait TPresenter {
 	 */
 	public function createTemplate(?ITemplate $template = NULL): ITemplate {
 		$template = $template ? : parent::createTemplate();
-		$template->assetsManager = $this->assetsManager;
+
+		/** @var Engine $latte */
+		$latte = $template->getLatte();
+		$latte->addProvider('assetsManager', $this->assetsManager);
 
 		return $template;
 	}
