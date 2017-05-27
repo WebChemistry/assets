@@ -24,7 +24,7 @@ trait TPresenter {
 	 */
 	public function createTemplate(?ITemplate $template = NULL): ITemplate {
 		$template = $template ? : parent::createTemplate();
-		$template->assets = $this->assetsManager;
+		$template->assetsManager = $this->assetsManager;
 
 		return $template;
 	}

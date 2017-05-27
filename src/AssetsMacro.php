@@ -16,7 +16,7 @@ class AssetsMacro extends MacroSet {
 	}
 
 	public function assetsMacro(MacroNode $node, PhpWriter $writer): string {
-		return $writer->write('echo $assets->parse(%node.args);');
+		return $writer->write('echo $assetsManager->parse(%node.args);');
 	}
 
 }
