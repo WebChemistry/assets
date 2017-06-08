@@ -5,14 +5,19 @@ declare(strict_types=1);
 namespace WebChemistry\Assets\DI;
 
 use Nette\DI\CompilerExtension;
+use Nette\DI\Config\Helpers;
 use Nette\Neon\Neon;
 use Nette\Utils\Finder;
-use Nette\Utils\Strings;
 use WebChemistry\Assets\AssetsException;
 use WebChemistry\Assets\AssetsMacro;
 use WebChemistry\Assets\AssetsManager;
 
 class AssetsExtension extends CompilerExtension {
+
+	private const SUPPORT_TYPES = [
+		'css' => TRUE,
+		'js' => TRUE
+	];
 
 	/** @var array */
 	public $defaults = [
@@ -20,9 +25,6 @@ class AssetsExtension extends CompilerExtension {
 		'minify' => NULL,
 		'baseDir' => NULL,
 	];
-
-	/** @var array */
-	private static $supportTypes = ['css' => TRUE, 'js' => TRUE];
 
 	public function loadConfiguration(): void {
 		$builder = $this->getContainerBuilder();
@@ -56,16 +58,15 @@ class AssetsExtension extends CompilerExtension {
 		$return = [];
 
 		foreach ($resources as $resource) {
-			$contents = file_get_contents($resource);
-			$decompiled = Strings::endsWith($resource, '.json') ? json_decode($contents, TRUE) : Neon::decode($contents);
-			$config = \Nette\DI\Config\Helpers::merge($config, $decompiled);
+			$decompiled = Neon::decode(file_get_contents($resource));
+			$config = Helpers::merge($config, $decompiled);
 		}
 
 		foreach ($config as $moduleArray) {
 			foreach ($moduleArray as $type => $typeArray) {
-				if (!isset(self::$supportTypes[$type])) {
+				if (!isset(self::SUPPORT_TYPES[$type])) {
 					throw new AssetsException("Found section '$type', but expected one of " .
-						implode(', ', array_keys(self::$supportTypes)));
+						implode(', ', array_keys(self::SUPPORT_TYPES)));
 				}
 				foreach ($typeArray as $minified => $assets) {
 					if ($minify) {

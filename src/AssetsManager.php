@@ -26,6 +26,11 @@ class AssetsManager {
 		$this->minify = $minify;
 	}
 
+	/**
+	 * @param string $name
+	 * @return string
+	 * @throws AssetsException
+	 */
 	public function parse(string $name): string {
 		$args = array_slice(func_get_args(), 1);
 		if (Strings::endsWith($name, '.css')) {
