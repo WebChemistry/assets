@@ -5,14 +5,14 @@ extensions:
 	
 assets:
 	resources:
-		- %appDir%/resource.yml
+		- %appDir%/assets.neon
 ```
 
 ## Assets config
-Example in app dir create assets.yml:
+Example in app dir create assets.neon:
 ```yaml
 ## Front module
-front: ## Not important
+front:
   css:
     "compiled/front.min.css":
       - "css/*.css"
@@ -86,7 +86,7 @@ module.exports = function(grunt) {
     grunt.config.init({
         netteAssets: {
             target: {
-                config: 'app/resource.yaml',
+                config: 'app/resource.neon',
                 basePath: 'www/'
             }
         }
