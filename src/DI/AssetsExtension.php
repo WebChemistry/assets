@@ -26,6 +26,9 @@ class AssetsExtension extends CompilerExtension {
 		'baseDir' => NULL,
 	];
 
+	/** @var array */
+	private $parameters = [];
+
 	public function loadConfiguration(): void {
 		$builder = $this->getContainerBuilder();
 		$config = $this->getParsedConfig();
@@ -59,8 +62,14 @@ class AssetsExtension extends CompilerExtension {
 
 		foreach ($resources as $resource) {
 			$decompiled = Neon::decode(file_get_contents($resource));
-			$config = Helpers::merge($config, $decompiled);
+			if ($config) {
+				$config = Helpers::merge($config, $decompiled);
+			} else {
+				$config = $decompiled;
+			}
 		}
+
+		$this->processParameters($config);
 
 		foreach ($config as $moduleArray) {
 			foreach ($moduleArray as $type => $typeArray) {
@@ -74,6 +83,7 @@ class AssetsExtension extends CompilerExtension {
 						continue;
 					}
 					foreach ((array) $assets as $row) {
+						$this->parseParameters($row);
 						if (strpos($row, '*') !== FALSE) {
 							/** @var \SplFileInfo $file */
 							foreach (Finder::findFiles(basename($row))->in($baseDir . '/' . dirname($row)) as $file) {
@@ -88,6 +98,25 @@ class AssetsExtension extends CompilerExtension {
 		}
 
 		return $return;
+	}
+
+	private function processParameters(array &$config): void {
+		if (!isset($config['parameters'])) {
+			return;
+		}
+
+		foreach ($config['parameters'] as $key => $val) {
+			$this->parameters['%' . $key . '%'] = $val;
+		}
+		unset($config['parameters']);
+	}
+
+	private function parseParameters(string &$str): void {
+		if (!$this->parameters) {
+			return;
+		}
+
+		$str = strtr($str, $this->parameters);
 	}
 
 	/**
