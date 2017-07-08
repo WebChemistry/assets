@@ -78,6 +78,7 @@ class AssetsExtension extends CompilerExtension {
 						implode(', ', array_keys(self::SUPPORT_TYPES)));
 				}
 				foreach ($typeArray as $minified => $assets) {
+					$this->parseParameters($minified);
 					if ($minify) {
 						$return[$type][$minified] = TRUE;
 						continue;
