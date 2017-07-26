@@ -17,10 +17,14 @@ class AssetsManager {
 	/** @var bool */
 	private $minify;
 
-	public function __construct(array $assets, bool $minify, IRequest $request) {
+	/** @var string */
+	private $wwwDir;
+
+	public function __construct(string $wwwDir, array $assets, bool $minify, IRequest $request) {
 		$this->assets = $assets;
 		$this->basePath = $request->getUrl()->getBasePath();
 		$this->minify = $minify;
+		$this->wwwDir = $wwwDir;
 	}
 
 	/**
@@ -28,12 +32,12 @@ class AssetsManager {
 	 * @return string
 	 * @throws AssetsException
 	 */
-	public function parse(string $name): string {
+	public function parse(string $name, bool $timestamp = false): string {
 		if (Strings::endsWith($name, '.css')) {
-			return $this->getCss($name);
+			return $this->getCss($name, $timestamp);
 
 		} else if (Strings::endsWith($name, '.js')) {
-			return $this->getJs($name);
+			return $this->getJs($name, $timestamp);
 
 		} else {
 			throw new AssetsException("Assets must ends with .js or .css, '$name' given.");
@@ -45,12 +49,17 @@ class AssetsManager {
 	 * @throws AssetsException
 	 * @return Html
 	 */
-	public function getCss(string $minified): Html {
+	public function getCss(string $minified, bool $timestamp = false): Html {
 		if (!isset($this->assets['css'][$minified])) {
 			throw new AssetsException("Minified assets '$minified' not exists.");
 		}
 
 		if ($this->minify) {
+			if ($timestamp) {
+				$timestamp = filemtime($this->wwwDir . '/' . $minified);
+				$minified = $minified . '?t=' . $timestamp;
+			}
+
 			$container = "<link rel=\"stylesheet\" href=\"" . ($this->basePath . $minified) . "\">\n";
 		} else {
 			$container = "<!-- Minified: " . ($this->basePath . $minified) . " -->\n";
@@ -67,12 +76,17 @@ class AssetsManager {
 	 * @throws AssetsException
 	 * @return Html
 	 */
-	public function getJs(string $minified): Html {
+	public function getJs(string $minified, bool $timestamp = false): Html {
 		if (!isset($this->assets['js'][$minified])) {
 			throw new AssetsException("Minified assets '$minified' not exists.");
 		}
 
 		if ($this->minify) {
+			if ($timestamp) {
+				$timestamp = filemtime($this->wwwDir . '/' . $minified);
+				$minified = $minified . '?t=' . $timestamp;
+			}
+
 			$container = "<script src=\"" . ($this->basePath . $minified) ."\"></script>\n";
 
 		} else {
