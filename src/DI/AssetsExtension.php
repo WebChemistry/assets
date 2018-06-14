@@ -37,7 +37,7 @@ class AssetsExtension extends CompilerExtension {
 		$this->compiler->addDependencies($config['resources']);
 
 		$builder->addDefinition($this->prefix('manager'))
-			->setClass(AssetsManager::class, [$builder->parameters['wwwDir'], $assets, $config['minify']]);
+			->setFactory(AssetsManager::class, [$builder->parameters['wwwDir'], $assets, $config['minify']]);
 	}
 
 	public function beforeCompile(): void {
