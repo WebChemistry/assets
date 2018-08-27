@@ -11,6 +11,8 @@ use Nette\Utils\Finder;
 use WebChemistry\Assets\AssetsException;
 use WebChemistry\Assets\AssetsMacro;
 use WebChemistry\Assets\AssetsManager;
+use WebChemistry\Assets\AssetsWrapper;
+use WebChemistry\Assets\HttpAssets;
 
 class AssetsExtension extends CompilerExtension {
 
@@ -37,7 +39,13 @@ class AssetsExtension extends CompilerExtension {
 		$this->compiler->addDependencies($config['resources']);
 
 		$builder->addDefinition($this->prefix('manager'))
-			->setFactory(AssetsManager::class, [$builder->parameters['wwwDir'], $assets, $config['minify']]);
+			->setType(AssetsManager::class);
+
+		$builder->addDefinition($this->prefix('wrapper'))
+			->setFactory(AssetsWrapper::class, [$builder->parameters['wwwDir'], $assets, $config['minify']]);
+
+		$builder->addDefinition($this->prefix('httpAssets'))
+			->setType(HttpAssets::class);
 	}
 
 	public function beforeCompile(): void {
@@ -71,7 +79,7 @@ class AssetsExtension extends CompilerExtension {
 
 		$this->processParameters($config);
 
-		foreach ($config as $moduleArray) {
+		foreach ($config as $module => $moduleArray) {
 			foreach ($moduleArray as $type => $typeArray) {
 				if (!isset(self::SUPPORT_TYPES[$type])) {
 					throw new AssetsException("Found section '$type', but expected one of " .
@@ -80,7 +88,8 @@ class AssetsExtension extends CompilerExtension {
 				foreach ($typeArray as $minified => $assets) {
 					$this->parseParameters($minified);
 					if ($minify) {
-						$return[$type][$minified] = TRUE;
+						$return[$type][$minified][] = $minified;
+						$return['meta'][$module][$type][] = $minified;
 						continue;
 					}
 					foreach ((array) $assets as $row) {
@@ -88,10 +97,10 @@ class AssetsExtension extends CompilerExtension {
 						if (strpos($row, '*') !== FALSE) {
 							/** @var \SplFileInfo $file */
 							foreach (Finder::findFiles(basename($row))->in($baseDir . '/' . dirname($row)) as $file) {
-								$return[$type][$minified][] = dirname($row) . '/' . $file->getBasename();
+								$return[$type][$minified][] = $return['meta'][$module][$type][] = dirname($row) . '/' . $file->getBasename();
 							}
 						} else {
-							$return[$type][$minified][] = $row;
+							$return[$type][$minified][] = $return['meta'][$module][$type][] = $row;
 						}
 					}
 				}
