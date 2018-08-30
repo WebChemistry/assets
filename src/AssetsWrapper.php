@@ -49,7 +49,11 @@ class AssetsWrapper {
 		}
 
 		foreach ($this->assets['meta'][$module]['css'] as $css) {
-			yield ($basePath ? $this->basePath : $this->baseUrl) . $this->timestamp($css);
+			if (AssetsHelpers::isAbsoluteUrl($css)) {
+				yield $css;
+			} else {
+				yield ($basePath ? $this->basePath : $this->baseUrl) . $this->timestamp($css);
+			}
 		}
 	}
 
@@ -59,7 +63,11 @@ class AssetsWrapper {
 		}
 
 		foreach ($this->assets['meta'][$module]['js'] as $js) {
-			yield ($basePath ? $this->basePath : $this->baseUrl) . $this->timestamp($js);
+			if (AssetsHelpers::isAbsoluteUrl($js)) {
+				yield $js;
+			} else {
+				yield ($basePath ? $this->basePath : $this->baseUrl) . $this->timestamp($js);
+			}
 		}
 	}
 
@@ -69,7 +77,11 @@ class AssetsWrapper {
 		}
 
 		foreach ($this->assets['css'][$file] as $css) {
-			yield ($basePath ? $this->basePath : $this->baseUrl) . $this->timestamp($css);
+			if (AssetsHelpers::isAbsoluteUrl($css)) {
+				yield $css;
+			} else {
+				yield ($basePath ? $this->basePath : $this->baseUrl) . $this->timestamp($css);
+			}
 		}
 	}
 
@@ -79,7 +91,11 @@ class AssetsWrapper {
 		}
 
 		foreach ($this->assets['js'][$file] as $js) {
-			yield ($basePath ? $this->basePath : $this->baseUrl) . $this->timestamp($js);
+			if (AssetsHelpers::isAbsoluteUrl($js)) {
+				yield $js;
+			} else {
+				yield ($basePath ? $this->basePath : $this->baseUrl) . $this->timestamp($js);
+			}
 		}
 	}
 

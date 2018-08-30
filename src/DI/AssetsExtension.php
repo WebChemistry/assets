@@ -9,6 +9,7 @@ use Nette\DI\Config\Helpers;
 use Nette\Neon\Neon;
 use Nette\Utils\Finder;
 use WebChemistry\Assets\AssetsException;
+use WebChemistry\Assets\AssetsHelpers;
 use WebChemistry\Assets\AssetsMacro;
 use WebChemistry\Assets\AssetsManager;
 use WebChemistry\Assets\AssetsWrapper;
@@ -88,8 +89,16 @@ class AssetsExtension extends CompilerExtension {
 				foreach ($typeArray as $minified => $assets) {
 					$this->parseParameters($minified);
 					if ($minify) {
+						foreach ((array) $assets as $row) {
+							if (AssetsHelpers::isAbsoluteUrl($row)) {
+								$return[$type][$minified][] = $row;
+								$return['meta'][$module][$type][] = $row;
+							}
+						}
+
 						$return[$type][$minified][] = $minified;
 						$return['meta'][$module][$type][] = $minified;
+
 						continue;
 					}
 					foreach ((array) $assets as $row) {
